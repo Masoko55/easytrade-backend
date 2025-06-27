@@ -29,14 +29,19 @@ dependencies {
 
 bootJar {
      mainClass = 'com.example.easytrade.TestApplication'
-     }
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs += ['-parameters', '--enable-preview']
-    options.compileArgs << '-parameters'
 }
+
+// --- THIS BLOCK IS UPDATED ---
+// This simplifies the Java compile options to a standard configuration
+// that is less likely to cause issues in CI/CD environments.
+tasks.withType(JavaCompile) {
+    options.compilerArgs = ['-parameters']
+}
+// --- END OF UPDATED BLOCK ---
 
 tasks.named('test') {
     useJUnitPlatform()
-    jvmArgs = ['--enable-preview']
+    // The '--enable-preview' flag is removed here as well for consistency,
+    // as it's not needed unless you are using specific Java preview features.
+    // jvmArgs = ['--enable-preview']
 }
