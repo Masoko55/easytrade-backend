@@ -1,0 +1,18 @@
+# nixpacks.toml
+
+# Specify the providers (languages/tools) to use.
+# We want to ensure it uses Gradle and a specific Java version.
+providers = ["java"]
+
+# Configure the Java provider
+[phases.setup]
+# This tells Nixpacks to install JDK version 22.
+# The available JDKs are typically from providers like 'openjdk' or 'zulu'.
+# Nixpacks recognizes 'jdk_version'.
+jdk_version = "22"
+
+[phases.build]
+# This overrides the default build command if needed, but Nixpacks is usually
+# smart enough to run './gradlew build'. We can be explicit if necessary.
+# The default is often sufficient, so we can leave this commented out for now.
+# cmds = ["./gradlew build --no-daemon"]
