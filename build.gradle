@@ -27,11 +27,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-bootJar {
-     mainClass = 'com.example.easytrade.TestApplication'
-}
+// The bootJar block has been removed. The Spring Boot plugin will now
+// automatically detect the main class from your @SpringBootApplication.
 
-// This block disables the creation of the non-executable "-plain.jar"
+// This block remains, as it's good practice to prevent the non-executable JAR.
 jar {
     enabled = false
 }
