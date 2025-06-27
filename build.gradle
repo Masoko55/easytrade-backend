@@ -1,7 +1,9 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.4'
-    id 'io.spring.dependency-management' version '1.1.4'
+    // --- THIS LINE IS UPDATED ---
+    id 'org.springframework.boot' version '3.3.1' // Using a stable release, not a SNAPSHOT
+    // --- END OF UPDATED LINE ---
+    id 'io.spring.dependency-management' version '1.1.4' // This version is fine
 }
 
 group = 'com.example'
@@ -27,10 +29,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-// The bootJar block has been removed. The Spring Boot plugin will now
-// automatically detect the main class from your @SpringBootApplication.
-
-// This block remains, as it's good practice to prevent the non-executable JAR.
+// This block prevents the non-executable "-plain.jar"
 jar {
     enabled = false
 }
