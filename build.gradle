@@ -31,17 +31,15 @@ bootJar {
      mainClass = 'com.example.easytrade.TestApplication'
 }
 
-// --- THIS BLOCK IS UPDATED ---
-// This simplifies the Java compile options to a standard configuration
-// that is less likely to cause issues in CI/CD environments.
+// This block disables the creation of the non-executable "-plain.jar"
+jar {
+    enabled = false
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs = ['-parameters']
 }
-// --- END OF UPDATED BLOCK ---
 
 tasks.named('test') {
     useJUnitPlatform()
-    // The '--enable-preview' flag is removed here as well for consistency,
-    // as it's not needed unless you are using specific Java preview features.
-    // jvmArgs = ['--enable-preview']
 }
