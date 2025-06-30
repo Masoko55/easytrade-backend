@@ -1,14 +1,14 @@
 # nixpacks.toml
 
-# Tell Nixpacks which providers (languages) to use.
-# It will automatically detect it needs Gradle from your build.gradle file.
-providers = ["java"]
-
-# Configure the Java provider by setting the version.
-# Nixpacks will find the appropriate package for this version itself.
 [phases.setup]
+# Use Java 21, which is a stable LTS version.
 jdk_version = "21"
 
-# We can remove the explicit build and start commands for now,
-# as Nixpacks is smart enough to detect Gradle and the Procfile.
-# Let's rely on its conventions first.
+[phases.build]
+# Add 'clean' to ensure no old artifacts interfere.
+# Add a Gradle property to explicitly turn off the daemon.
+cmds = ["./gradlew clean build -x test --no-daemon -Dorg.gradle.daemon=false"]
+
+[start]
+# The start command remains the same.
+cmd = "java -Dserver.port=${PORT} -jar build/libs/*.jar"
