@@ -29,16 +29,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Apply CORS configuration first
+            // Use the 'corsConfigurationSource' bean defined below
             .cors(Customizer.withDefaults())
-            // Disable CSRF
+            // Disable CSRF for stateless REST APIs
             .csrf(AbstractHttpConfigurer::disable)
-            // --- RADICAL SIMPLIFICATION FOR DEBUGGING ---
-            // Permit ALL requests to ALL endpoints temporarily
+            // Permit ALL requests to ALL endpoints. This simplifies things for a school project.
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()
+            )
+            // Configure session management to be stateless (important for APIs)
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
-            // --- END OF SIMPLIFICATION ---
 
         return http.build();
     }
@@ -47,16 +49,21 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Use a wildcard for AllowedOrigins for this test ONLY.
-        // This is insecure for production but will definitively rule out a typo in the domain names.
+        // Allow requests from any origin.
         configuration.setAllowedOrigins(List.of("*"));
         
+        // Allow all standard HTTP methods.
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*")); // Allow all headers for the test
-        // setAllowCredentials(true) is often not allowed with setAllowedOrigins("*"), so we comment it out for this test.
-        // configuration.setAllowCredentials(true); 
+        
+        // Allow all headers.
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        
+        // IMPORTANT: Even with wildcard origins, we can explicitly allow credentials.
+        // While some browser/server combos are strict, this often works and is needed for your auth flow.
+        configuration.setAllowCredentials(true); 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // Apply this CORS configuration to all paths on the server.
         source.registerCorsConfiguration("/**", configuration);
         
         return source;
