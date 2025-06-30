@@ -29,15 +29,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Use the 'corsConfigurationSource' bean defined below
             .cors(Customizer.withDefaults())
-            // Disable CSRF for stateless REST APIs
             .csrf(AbstractHttpConfigurer::disable)
-            // Permit ALL requests to ALL endpoints. This simplifies things for a school project.
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
+                .anyRequest().permitAll() // Keep it open for simplicity
             )
-            // Configure session management to be stateless (important for APIs)
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
@@ -49,21 +45,20 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Allow requests from any origin.
+        // Allow requests from any origin
         configuration.setAllowedOrigins(List.of("*"));
         
-        // Allow all standard HTTP methods.
+        // Allow all standard HTTP methods
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
-        // Allow all headers.
+        // Allow all headers
         configuration.setAllowedHeaders(Arrays.asList("*"));
         
-        // IMPORTANT: Even with wildcard origins, we can explicitly allow credentials.
-        // While some browser/server combos are strict, this often works and is needed for your auth flow.
+        // --- THIS IS THE KEY CHANGE FROM THE "TEST" VERSION ---
+        // We are re-enabling this so your frontend can handle login sessions and tokens.
         configuration.setAllowCredentials(true); 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Apply this CORS configuration to all paths on the server.
         source.registerCorsConfiguration("/**", configuration);
         
         return source;
