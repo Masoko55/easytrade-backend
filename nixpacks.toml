@@ -1,11 +1,14 @@
 # nixpacks.toml
 
+# Tell Nixpacks which providers (languages) to use.
+# It will automatically detect it needs Gradle from your build.gradle file.
+providers = ["java"]
+
+# Configure the Java provider by setting the version.
+# Nixpacks will find the appropriate package for this version itself.
 [phases.setup]
-# Use the Nix package for Eclipse Temurin JDK 21
-nixPkgs = ["...", "pkgs.temurin-21-jdk"]
+jdk_version = "21"
 
-[phases.build]
-cmds = ["./gradlew build --no-daemon -x test"]
-
-[start]
-cmd = "java -Dserver.port=${PORT} -jar build/libs/*.jar"
+# We can remove the explicit build and start commands for now,
+# as Nixpacks is smart enough to detect Gradle and the Procfile.
+# Let's rely on its conventions first.
