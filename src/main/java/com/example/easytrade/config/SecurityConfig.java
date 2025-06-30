@@ -2,8 +2,7 @@ package com.example.easytrade.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod; // <<< IMPORT THIS
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,18 +29,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(Customizer.withDefaults())
+            // Apply CORS configuration first
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // Disable CSRF as we are using a stateless API
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                // --- THIS IS THE NEW LINE ---
-                // Explicitly allow all CORS preflight (OPTIONS) requests
+                // This rule for OPTIONS requests is still good to have explicitly
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // --- END OF NEW LINE ---
-                
+                // Your public endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/users/**").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                // All other requests should be authenticated
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -55,21 +55,26 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // List of allowed origins (your frontend URLs)
+        // --- CRITICAL PART: VERIFY YOUR VERCEL URLS ---
+        // Let's get the exact URLs from your Vercel deployment screenshot.
+        // The screenshot showed:
+        // 1. easytrade-ui-git-main-ntlhari-ndlovhu-s-projects.vercel.app
+        // 2. easytrade-4mxrzbvf1-ntlhari-ndlovhu-s-projects.vercel.app
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",                // For local Next.js development
-                "https://easytrade-ui.vercel.app",      // Your Vercel production domain
-                "https://easytrade-ui-git-main-ntlhari-ndlovhu-s-projects.vercel.app", // Specific preview domain
-                "https://easytrade-4mxrzbvf1-ntlhari-ndlovhu-s-projects.vercel.app"  // Another preview domain from your logs
+                "http://localhost:3000",
+                "https://easytrade-ui-git-main-ntlhari-ndlovhu-s-projects.vercel.app",
+                "https://easytrade-4mxrzbvf1-ntlhari-ndlovhu-s-projects.vercel.app"
+                // You can add your main project domain later, e.g., "https://easytrade-ui.vercel.app"
         ));
-        
+        // --- END OF CRITICAL PART ---
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // Apply to ALL paths
         
         return source;
     }
