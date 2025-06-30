@@ -4,12 +4,20 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
+// --- NEW springBoot CONFIGURATION BLOCK ---
+// This explicitly tells the Spring Boot plugin what the main class is.
+// It's a more direct configuration than modifying the bootJar task.
+springBoot {
+    mainClass = 'com.example.easytrade.TestApplication'
+}
+// --- END NEW BLOCK ---
+
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21 // UPDATED
-    targetCompatibility = JavaVersion.VERSION_21 // UPDATED
+    sourceCompatibility = JavaVersion.VERSION_21 // Sticking with stable LTS Java 21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -17,7 +25,6 @@ repositories {
 }
 
 dependencies {
-    // ... your dependencies remain the same ...
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -28,11 +35,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-bootJar {
-     mainClass = 'com.example.easytrade.TestApplication'
-     classpath = sourceSets.main.runtimeClasspath
-}
+// We removed the bootJar block and replaced it with the springBoot block above.
 
+// This block remains to prevent the non-executable "-plain.jar".
 jar {
     enabled = false
 }
