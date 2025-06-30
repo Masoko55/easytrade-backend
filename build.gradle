@@ -1,9 +1,7 @@
 plugins {
     id 'java'
-    // --- THIS LINE IS UPDATED ---
-    id 'org.springframework.boot' version '3.3.1' // Using a stable release, not a SNAPSHOT
-    // --- END OF UPDATED LINE ---
-    id 'io.spring.dependency-management' version '1.1.4' // This version is fine
+    id 'org.springframework.boot' version '3.3.1' // Using a STABLE release
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.example'
@@ -29,7 +27,12 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-// This block prevents the non-executable "-plain.jar"
+// THIS BLOCK IS CRUCIAL AND MUST BE PRESENT
+bootJar {
+     mainClass = 'com.example.easytrade.TestApplication'
+}
+
+// This block is also good practice
 jar {
     enabled = false
 }
