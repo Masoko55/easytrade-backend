@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.1' // Using a STABLE release
+    id 'org.springframework.boot' version '3.3.1'
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -27,12 +27,13 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-// THIS BLOCK IS CRUCIAL AND MUST BE PRESENT
+// --- UPDATED bootJar BLOCK ---
 bootJar {
      mainClass = 'com.example.easytrade.TestApplication'
+     // Explicitly set the classpath to resolve runtime ClassNotFoundException
+     classpath = sourceSets.main.runtimeClasspath
 }
 
-// This block is also good practice
 jar {
     enabled = false
 }
