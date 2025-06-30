@@ -8,8 +8,8 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_22
-    targetCompatibility = JavaVersion.VERSION_22
+    sourceCompatibility = JavaVersion.VERSION_21 // UPDATED
+    targetCompatibility = JavaVersion.VERSION_21 // UPDATED
 }
 
 repositories {
@@ -17,6 +17,7 @@ repositories {
 }
 
 dependencies {
+    // ... your dependencies remain the same ...
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -27,10 +28,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-// --- UPDATED bootJar BLOCK ---
 bootJar {
      mainClass = 'com.example.easytrade.TestApplication'
-     // Explicitly set the classpath to resolve runtime ClassNotFoundException
      classpath = sourceSets.main.runtimeClasspath
 }
 

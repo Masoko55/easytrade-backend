@@ -1,18 +1,11 @@
-# nixpacks.toml - Explicit configuration for Railway build
+# nixpacks.toml
 
-# Define the phases of the build
 [phases.setup]
-# Use the official Eclipse Temurin distribution of OpenJDK 22 from the Nix package manager.
-# This is a very specific and reliable way to get Java 22.
-nixPkgs = ["...", "pkgs.eclipse-temurin-bin-22"]
+# Use the Nix package for Eclipse Temurin JDK 21
+nixPkgs = ["...", "pkgs.temurin-21-jdk"]
 
 [phases.build]
-# Explicitly define the build command. This ensures Railway runs exactly what we want.
-# We use --no-daemon for cleaner builds in CI environments and -x test to skip tests.
 cmds = ["./gradlew build --no-daemon -x test"]
 
 [start]
-# This overrides the Procfile if needed, but your Procfile is also correct.
-# We can be explicit here too. This command runs AFTER the build is successful.
-# It finds the JAR in the standard build output directory.
 cmd = "java -Dserver.port=${PORT} -jar build/libs/*.jar"
